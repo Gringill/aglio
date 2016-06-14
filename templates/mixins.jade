@@ -147,6 +147,44 @@ mixin Examples(resourceGroup, resource, action)
         each response in example.responses
             +RequestResponse('Response', response, true)
 
+mixin AttributeRow(element)
+    div(style="height: auto; width: 172px; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; margin-left: 20px; margin-right: 40px; min-width: 172px; max-width: 172px;")
+        div(style="width: 100%; height: auto; font-family: \"Source Code Pro\"; font-weight: 500; font-size: 13px; line-height: 13px; color: rgb(138, 147, 163); word-wrap: normal;")!= element.content.key.content
+    div(style="height: auto; width: 100%; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;")
+        div(style="width: 100%; height: auto; display: flex; flex-direction: row; justify-content: flex-start; align-items: stretch; position: relative;")
+            div(style="height: auto; width: 100%; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;")
+                div(style="width: 100%; font-family: \"Source Code Pro\"; font-size: 13px; color: rgb(138, 147, 163); line-height: 13px;")!= element.content.value.element
+        div(style="width: 100%; height: auto; display: flex; flex-direction: row; justify-content: flex-start; align-items: stretch; position: relative;")
+            div
+                style.
+                    .attributesKit p {
+                        margin-bottom: 4px;
+                        font-family: Source Sans Pro;
+                        font-size: 14px;
+                        color: #8A93A3;
+                        line-height: 21px;
+                        font-weight: regular;
+                    }
+                    .attributesKit p:last-child {
+                        margin-bottom: 0px;
+                    }
+                    .attributesKit ul {
+                        margin-left: 20px;
+                    }
+                    .attributesKit a {
+                        color: #747E8E;
+                        text-decoration: none;
+                        border-bottom: 1px solid #DCE0E8;
+                    }
+                    .attributesKit a:hover {
+                        border-bottom: none;
+                    }
+                div(style="font-family: \"Source Sans Pro\"; font-size: 13px; color: rgb(138, 147, 163); line-height: 150%; margin-top: 6px;")
+                    if element.meta
+                        p!= element.meta.description
+                    else
+                        p!= 'Invalid'
+
 mixin Content()
     //- Page header and API description
     header
@@ -174,6 +212,32 @@ mixin Content()
                         a.permalink(href=resource.elementLink) &nbsp;&para;
                     if resource.description
                         != self.markdown(resource.description)
+
+                    div(class="row resourceAttributes")
+                        div(class="row attributesTitle")
+                            h3(class="row attributesTitleText") Attributes
+                        div(class="row attributesKit")
+                            div(data-reactroot="" class="attributesKit")
+                                div(style="width: 100%; height: auto; display: flex; flex-direction: row; justify-content: flex-start; align-items: stretch; position: relative; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(210, 216, 222);")
+                                    div(style="height: auto; width: 100%; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;")
+                                        div(style="width: 100%; height: auto; display: flex; flex-direction: row; justify-content: flex-start; align-items: stretch; position: relative;")
+                                            div(style="width: 100%; height: auto;")
+                                                div
+                                                    div
+                                                        if (attributes=self.api.content[self.api.resourceGroups.indexOf(resourceGroup) + resourceGroup.resources.indexOf(resource)])
+                                                            if (attributes=attributes.content[0])
+                                                                if (attributes=attributes.content[0])
+                                                                    if (attributes=attributes.content[0])
+                                                                        if ((attributes=attributes.content).length > 0)
+                                                                            each element in attributes
+                                                                                if (attributes.indexOf(element) == attributes.length - 1)
+                                                                                    div(style="width: 100%; height: auto; display: flex; flex-direction: row; justify-content: flex-start; align-items: stretch; position: relative; padding-top: 14px; padding-bottom: 14px;")
+                                                                                        +AttributeRow(element)
+                                                                                else
+                                                                                    div(style="width: 100%; height: auto; display: flex; flex-direction: row; justify-content: flex-start; align-items: stretch; position: relative; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(232, 235, 238); padding-top: 14px; padding-bottom: 14px;")
+                                                                                        +AttributeRow(element)
+                                                        else
+                                                            p!= "No attributes"
 
                     each action in resource.actions || []
                         .action(class=action.methodLower, id=action.elementId)
